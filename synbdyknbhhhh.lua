@@ -13,40 +13,39 @@ local function selfDestruct()
 end
 
 local function isHooked(func)
-    local ok, result = pcall(function()
-        if isfunctionhooked then
-            return isfunctionhooked(func)
-        end
-        return false
-    end)
-    return ok and result or false
+    if isfunctionhooked then
+        return isfunctionhooked(func)
+    end
+    return false
 end
 
-if isHooked(game.HttpGet) or isHooked(game.HttpPost) then
+if isHooked(game.HttpGet) then
     selfDestruct()
     return
 end
 
-local req = request or http_request or (syn and syn.request)
-if req and isHooked(req) then
+if isHooked(game.HttpPost) then
+    selfDestruct()
+    return
+end
+
+local requestFunc = request or http_request
+if requestFunc and isHooked(requestFunc) then
     selfDestruct()
     return
 end
 
 spawn(function()
-    local startTime = os.clock()
     while task.wait(0.5) do
-        if os.clock() - startTime > 30 then
-            break
+        if isHooked(game.HttpGet) then
+            selfDestruct()
         end
-        pcall(function()
-            if isHooked(game.HttpGet) or isHooked(game.HttpPost) then
-                selfDestruct()
-            end
-            local r = request or http_request
-            if r and isHooked(r) then
-                selfDestruct()
-            end
-        end)
+        if isHooked(game.HttpPost) then
+            selfDestruct()
+        end
+        local req = request or http_request
+        if req and isHooked(req) then
+            selfDestruct()
+        end
     end
 end)
