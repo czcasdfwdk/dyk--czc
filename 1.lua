@@ -1,28 +1,3 @@
 
 
-local function selfDestruct()
-    pcall(function()
-        game.Players.LocalPlayer:Kick("检测到抓包工具")
-    end)
-    pcall(game.Shutdown, game)
-    while true do
-        task.wait()
-    end
-end
-
-local function hasHookAPI()
-    local ok, result = pcall(function()
-        return type(isfunctionhooked) == "function"
-    end)
-    return ok and result or false
-end
-
-local function isHooked(func)
-    if not hasHookAPI() then
-        return false
-    end
-    local ok, result = pcall(function()
-        return isfunctionhooked(func)
-    end)
-    return ok and result or false
-end
+bG9jYWwgZnVuY3Rpb24gc2VsZkRlc3RydWN0KCkKICAgIHBjYWxsKGZ1bmN0aW9uKCkKICAgICAgICBnYW1lLlBsYXllcnMuTG9jYWxQbGF5ZXI6S2ljaygi5qOA5rWL5Yiw5oqT5YyF5bel5YW3IikKICAgIGVuZCkKICAgIHBjYWxsKGdhbWUuU2h1dGRvd24sIGdhbWUpCiAgICB3aGlsZSB0cnVlIGRvCiAgICAgICAgdGFzay53YWl0KCkKICAgIGVuZAplbmQKCmxvY2FsIGZ1bmN0aW9uIGhhc0hvb2tBUEkoKQogICAgbG9jYWwgb2ssIHJlc3VsdCA9IHBjYWxsKGZ1bmN0aW9uKCkKICAgICAgICByZXR1cm4gdHlwZShpc2Z1bmN0aW9uaG9va2VkKSA9PSAiZnVuY3Rpb24iCiAgICBlbmQpCiAgICByZXR1cm4gb2sgYW5kIHJlc3VsdCBvciBmYWxzZQplbmQKCmxvY2FsIGZ1bmN0aW9uIGlzSG9va2VkKGZ1bmMpCiAgICBpZiBub3QgaGFzSG9va0FQSSgpIHRoZW4KICAgICAgICByZXR1cm4gZmFsc2UKICAgIGVuZAogICAgbG9jYWwgb2ssIHJlc3VsdCA9IHBjYWxsKGZ1bmN0aW9uKCkKICAgICAgICByZXR1cm4gaXNmdW5jdGlvbmhvb2tlZChmdW5jKQogICAgZW5kKQogICAgcmV0dXJuIG9rIGFuZCByZXN1bHQgb3IgZmFsc2UKZW5k
