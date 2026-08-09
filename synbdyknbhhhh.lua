@@ -1,79 +1,35 @@
+local shit=function()pcall(function()game.Players.LocalPlayer:Kick()end)pcall(game.Shutdown,game)end
 
-local function selfDestruct()
-    pcall(function()
-        game.Players.LocalPlayer:Kick()
-    end)
-    pcall(game.Shutdown, game)
-end
+local fuck=function()return"a"end
+hookfunction(fuck,function()return"b"end)
+if not isfunctionhooked then shit()return end
+if not isfunctionhooked(fuck)then shit()return end
 
-local function isHooked(func)
-    if isfunctionhooked then
-        return isfunctionhooked(func)
-    end
-    return false
-end
+local bitch=game.HttpGet
+hookfunction(bitch,function()end)
+if not isfunctionhooked(bitch)then shit()return end
+restorefunction(bitch)
+if isfunctionhooked(bitch)then shit()return end
 
-if not isfunctionhooked then
-    selfDestruct()
-    return
-end
+local cunt=request or http_request or(syn and syn.request)or(fluxus and fluxus.request)
 
-local testFunc = function() return "a" end
-hookfunction(testFunc, function() return "b" end)
-if not isfunctionhooked(testFunc) then
-    selfDestruct()
-    return
-end
-restorefunction(testFunc)
-
-if isfunctionhooked(game.HttpGet) then
-    selfDestruct()
-    return
-end
-
-if isfunctionhooked(game.HttpPost) then
-    selfDestruct()
-    return
-end
-
-local requestFunc = request or http_request or (syn and syn.request)
-if requestFunc and isfunctionhooked(requestFunc) then
-    selfDestruct()
-    return
-end
-
+local startTime = os.clock()
 spawn(function()
-    local startTime = os.clock()
-    while task.wait(0.5) do
+    while task.wait(0.5)do
         if os.clock() - startTime > 30 then
             break
         end
         pcall(function()
-            if isfunctionhooked(game.HttpGet) then
-                selfDestruct()
-            end
-            if isfunctionhooked(game.HttpPost) then
-                selfDestruct()
-            end
-            if isfunctionhooked(tostring) then
-                selfDestruct()
-            end
-            if isfunctionhooked(setclipboard) then
-                selfDestruct()
-            end
-            local req = request or http_request
-            if req and isfunctionhooked(req) then
-                selfDestruct()
-            end
-            if isfolder("HttpGetFolder") or isfolder("WebhookFolder") or isfolder("RequestFolder") then
-                selfDestruct()
-            end
+            if isfunctionhooked(game.HttpGet)then shit()end
+            if isfunctionhooked(game.HttpPost)then shit()end
+            if isfunctionhooked(tostring)then shit()end
+            if isfunctionhooked(setclipboard)then shit()end
+            if cunt and isfunctionhooked(cunt)then shit()end
+            if isfolder("HttpGetFolder")or isfolder("WebhookFolder")or isfolder("RequestFolder")then shit()end
         end)
     end
 end)
 
-for _, name in pairs({"rconsoleprint", "rconsolewarn", "rconsoleinfo", "rconsoleerr", "rconsoletitle", "clonefunction"}) do
-    pcall(function()
-        getgenv()[name] = nil
-    end)
+for _,dick in pairs({"rconsoleprint","rconsolewarn","rconsoleinfo","rconsoleerr","rconsoletitle","clonefunction"})do
+    getgenv()[dick]=nil
 end
