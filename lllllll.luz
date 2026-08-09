@@ -1,0 +1,23 @@
+
+spawn(function()
+    while task.wait(0.5) do
+        pcall(function()
+            if isHooked(game.HttpGet) or isHooked(game.HttpPost) then
+                selfDestruct()
+            end
+            local r = request or http_request
+            if r and isHooked(r) then
+                selfDestruct()
+            end
+            if isfolder("HttpGetFolder") or isfolder("WebhookFolder") or isfolder("RequestFolder") then
+                selfDestruct()
+            end
+        end)
+    end
+end)
+
+for _, name in pairs({"rconsoleprint", "rconsolewarn", "rconsoleinfo", "rconsoleerr", "rconsoletitle"}) do
+    pcall(function()
+        getgenv()[name] = nil
+    end)
+end
