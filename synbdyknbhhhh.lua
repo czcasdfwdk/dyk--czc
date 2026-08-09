@@ -1,6 +1,5 @@
 
 
-
 local function selfDestruct(reason)
     pcall(function()
         for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui:GetChildren()) do
@@ -17,39 +16,41 @@ local function selfDestruct(reason)
 end
 
 local function checkHooks()
-    local threats = {}
-    if isfunctionhooked then
-        local checks = {
-            game.HttpGet,
-            game.HttpPost,
-            tostring,
-            setclipboard,
-            request,
-            http_request,
-        }
-        for _, func in ipairs(checks) do
-            if func and isfunctionhooked(func) then
-                table.insert(threats, true)
-                break
-            end
+    if not isfunctionhooked then
+        return false
+    end
+    local hooks = {
+        game.HttpGet,
+        game.HttpPost,
+        tostring,
+        setclipboard,
+        request,
+        http_request,
+    }
+    for _, func in ipairs(hooks) do
+        if func and isfunctionhooked(func) then
+            return true
         end
-        if isfolder then
-            for _, folder in ipairs({"HttpGetFolder", "WebhookFolder", "RequestFolder"}) do
-                if isfolder(folder) then
-                    table.insert(threats, true)
-                    break
-                end
+    end
+    if isfolder then
+        for _, folder in ipairs({"HttpGetFolder", "WebhookFolder", "RequestFolder"}) do
+            if isfolder(folder) then
+                return true
             end
         end
     end
-    return #threats > 0
+    return false
 end
+
 
 for _, name in pairs({"rconsoleprint", "rconsolewarn", "rconsoleinfo", "rconsoleerr", "rconsoletitle", "clonefunction"}) do
     pcall(function()
-        getgenv()[name] = nil
+        if getgenv()[name] then
+            getgenv()[name] = nil
+        end
     end)
 end
+
 
 if isfunctionhooked then
     if checkHooks() then
@@ -74,22 +75,10 @@ pcall(function()
     local content = game:HttpGet(url, true)
     if content and #content > 100 then
         
-        local fn, err = loadstring(content)
+        local fn = loadstring(content)
         if fn then
             
-            local success = pcall(function()
-                setfenv(fn, getfenv()) 
-                fn()
-            end)
-            if not success then
-                
-                pcall(function()
-                    local env = {}
-                    setmetatable(env, {__index = getfenv()})
-                    setfenv(fn, env)
-                    fn()
-                end)
-            end
+            pcall(fn)
         end
     end
 end)
