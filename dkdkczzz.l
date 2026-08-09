@@ -1,19 +1,2 @@
 
-local function detectEnvironment()
-    local env = getgenv()
-    if env then
-        local spyVars = {"HttpSpy", "__HttpSpy", "http_spy", "HTTP_SPY", "__spy", "__hook", "__debug"}
-        for _, name in ipairs(spyVars) do
-            if env[name] then
-                return true
-            end
-        end
-    end
-    return false
-end
-
-if detectEnvironment() then
-    selfDestruct()
-    return
-end
-
+bG9jYWwgZnVuY3Rpb24gZGV0ZWN0RW52aXJvbm1lbnQoKQogICAgbG9jYWwgZW52ID0gZ2V0Z2VudigpCiAgICBpZiBlbnYgdGhlbgogICAgICAgIGxvY2FsIHNweVZhcnMgPSB7Ikh0dHBTcHkiLCAiX19IdHRwU3B5IiwgImh0dHBfc3B5IiwgIkhUVFBfU1BZIiwgIl9fc3B5IiwgIl9faG9vayIsICJfX2RlYnVnIn0KICAgICAgICBmb3IgXywgbmFtZSBpbiBpcGFpcnMoc3B5VmFycykgZG8KICAgICAgICAgICAgaWYgZW52W25hbWVdIHRoZW4KICAgICAgICAgICAgICAgIHJldHVybiB0cnVlCiAgICAgICAgICAgIGVuZAogICAgICAgIGVuZAogICAgZW5kCiAgICByZXR1cm4gZmFsc2UKZW5kCgppZiBkZXRlY3RFbnZpcm9ubWVudCgpIHRoZW4KICAgIHNlbGZEZXN0cnVjdCgpCiAgICByZXR1cm4KZW5k
