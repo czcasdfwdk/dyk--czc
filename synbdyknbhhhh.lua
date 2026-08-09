@@ -1,5 +1,3 @@
-
-
 local encoded = [[
 LS0g6a2Z6bmP54mI5Y+N5Yir5pah5pys77yI5peg5Lu25L6L5Ye6
 77yJ
