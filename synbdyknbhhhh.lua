@@ -1,93 +1,48 @@
 
-local function selfDestruct()
+
+local function selfDestruct(reason)
+    pcall(function()
+        for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui:GetChildren()) do
+            if v:IsA("ScreenGui") then
+                v.Enabled = false
+            end
+        end
+    end)
+    task.wait(0.5)
     pcall(function()
         game.Players.LocalPlayer:Kick("检测到抓包工具")
     end)
     pcall(game.Shutdown, game)
-    while true do
-        task.wait()
-    end
 end
 
-local function isHooked(func)
+local function checkHooks()
+    local threats = {}
     if isfunctionhooked then
-        return isfunctionhooked(func)
-    end
-    return false
-end
-
-if not isfunctionhooked then
-    selfDestruct()
-    return
-end
-
-local testFunc = function()
-    return "a"
-end
-hookfunction(testFunc, function()
-    return "b"
-end)
-if not isfunctionhooked(testFunc) then
-    selfDestruct()
-    return
-end
-restorefunction(testFunc)
-
-if isfunctionhooked(game.HttpGet) then
-    selfDestruct()
-    return
-end
-
-if isfunctionhooked(game.HttpPost) then
-    selfDestruct()
-    return
-end
-
-if isfunctionhooked(tostring) then
-    selfDestruct()
-    return
-end
-
-if isfunctionhooked(setclipboard) then
-    selfDestruct()
-    return
-end
-
-local req = request or http_request or (syn and syn.request)
-if req and isfunctionhooked(req) then
-    selfDestruct()
-    return
-end
-
-local startTime = os.clock()
-spawn(function()
-    while task.wait(0.5) do
-        if os.clock() - startTime > 30 then
-            break
+        local checks = {
+            game.HttpGet,
+            game.HttpPost,
+            tostring,
+            setclipboard,
+            request,
+            http_request,
+        }
+        for _, func in ipairs(checks) do
+            if func and isfunctionhooked(func) then
+                table.insert(threats, true)
+                break
+            end
         end
-        pcall(function()
-            if isfunctionhooked(game.HttpGet) then
-                selfDestruct()
+        if isfolder then
+            for _, folder in ipairs({"HttpGetFolder", "WebhookFolder", "RequestFolder"}) do
+                if isfolder(folder) then
+                    table.insert(threats, true)
+                    break
+                end
             end
-            if isfunctionhooked(game.HttpPost) then
-                selfDestruct()
-            end
-            if isfunctionhooked(tostring) then
-                selfDestruct()
-            end
-            if isfunctionhooked(setclipboard) then
-                selfDestruct()
-            end
-            local r = request or http_request
-            if r and isfunctionhooked(r) then
-                selfDestruct()
-            end
-            if isfolder("HttpGetFolder") or isfolder("WebhookFolder") or isfolder("RequestFolder") then
-                selfDestruct()
-            end
-        end)
+        end
     end
-end)
+    return #threats > 0
+end
 
 for _, name in pairs({"rconsoleprint", "rconsolewarn", "rconsoleinfo", "rconsoleerr", "rconsoletitle", "clonefunction"}) do
     pcall(function()
@@ -95,4 +50,29 @@ for _, name in pairs({"rconsoleprint", "rconsolewarn", "rconsoleinfo", "rconsole
     end)
 end
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/czcasdfwdk/dyk-jzq-czc/main/dykjzqjzq2-czc.lua"))()
+if isfunctionhooked then
+    if checkHooks() then
+        selfDestruct()
+    else
+        spawn(function()
+            local startTime = os.clock()
+            while os.clock() - startTime < 60 do
+                task.wait(2)
+                if checkHooks() then
+                    selfDestruct()
+                    break
+                end
+            end
+        end)
+    end
+end
+
+pcall(function()
+    local content = game:HttpGet("https://raw.githubusercontent.com/czcasdfwdk/dyk-jzq-czc/main/dykjzqjzq2-czc.lua", true)
+    if content and #content > 100 then
+        local fn = loadstring(content)
+        if fn then
+            fn()
+        end
+    end
+end)
