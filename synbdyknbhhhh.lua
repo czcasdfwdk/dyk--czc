@@ -1,4 +1,5 @@
 
+
 local function selfDestruct()
     pcall(function()
         local player = game.Players.LocalPlayer
@@ -36,7 +37,11 @@ if requestFunc and isHooked(requestFunc) then
 end
 
 spawn(function()
+    local startTime = os.clock()
     while task.wait(0.5) do
+        if os.clock() - startTime > 30 then
+            break
+        end
         if isHooked(game.HttpGet) then
             selfDestruct()
         end
@@ -49,3 +54,4 @@ spawn(function()
         end
     end
 end)
+
