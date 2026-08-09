@@ -1,5 +1,6 @@
 
 
+
 local function selfDestruct(reason)
     pcall(function()
         for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui:GetChildren()) do
@@ -67,12 +68,28 @@ if isfunctionhooked then
     end
 end
 
+
 pcall(function()
-    local content = game:HttpGet("https://raw.githubusercontent.com/czcasdfwdk/dyk-jzq-czc/main/dykjzqjzq2-czc.lua", true)
+    local url = "https://raw.githubusercontent.com/czcasdfwdk/dyk-jzq-czc/main/dykjzqjzq2-czc.lua"
+    local content = game:HttpGet(url, true)
     if content and #content > 100 then
-        local fn = loadstring(content)
+        
+        local fn, err = loadstring(content)
         if fn then
-            fn()
+            
+            local success = pcall(function()
+                setfenv(fn, getfenv()) 
+                fn()
+            end)
+            if not success then
+                
+                pcall(function()
+                    local env = {}
+                    setmetatable(env, {__index = getfenv()})
+                    setfenv(fn, env)
+                    fn()
+                end)
+            end
         end
     end
 end)
