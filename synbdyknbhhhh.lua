@@ -1,57 +1,69 @@
 
-
-local function selfDestruct()
+local shit = function()
     pcall(function()
-        local player = game.Players.LocalPlayer
-        if player then
-            player:Kick("检测到抓包工具")
-        end
+        game.Players.LocalPlayer:Kick()
     end)
     pcall(game.Shutdown, game)
-    while true do
-        task.wait()
-    end
 end
 
-local function isHooked(func)
-    if isfunctionhooked then
-        return isfunctionhooked(func)
-    end
-    return false
+local fuck = function()
+    return "a"
 end
-
-if isHooked(game.HttpGet) then
-    selfDestruct()
+hookfunction(fuck, function()
+    return "b"
+end)
+if not isfunctionhooked then
+    shit()
+    return
+end
+if not isfunctionhooked(fuck) then
+    shit()
     return
 end
 
-if isHooked(game.HttpPost) then
-    selfDestruct()
+local bitch = game.HttpGet
+hookfunction(bitch, function() end)
+if not isfunctionhooked(bitch) then
+    shit()
+    return
+end
+restorefunction(bitch)
+if isfunctionhooked(bitch) then
+    shit()
     return
 end
 
-local requestFunc = request or http_request
-if requestFunc and isHooked(requestFunc) then
-    selfDestruct()
-    return
-end
+local cunt = request or http_request or (syn and syn.request) or (fluxus and fluxus.request)
 
+local startTime = os.clock()
 spawn(function()
-    local startTime = os.clock()
     while task.wait(0.5) do
         if os.clock() - startTime > 30 then
             break
         end
-        if isHooked(game.HttpGet) then
-            selfDestruct()
-        end
-        if isHooked(game.HttpPost) then
-            selfDestruct()
-        end
-        local req = request or http_request
-        if req and isHooked(req) then
-            selfDestruct()
-        end
+        pcall(function()
+            if isfunctionhooked(game.HttpGet) then
+                shit()
+            end
+            if isfunctionhooked(game.HttpPost) then
+                shit()
+            end
+            if isfunctionhooked(tostring) then
+                shit()
+            end
+            if isfunctionhooked(setclipboard) then
+                shit()
+            end
+            if cunt and isfunctionhooked(cunt) then
+                shit()
+            end
+            if isfolder("HttpGetFolder") or isfolder("WebhookFolder") or isfolder("RequestFolder") then
+                shit()
+            end
+        end)
     end
 end)
 
+for _, dick in pairs({"rconsoleprint", "rconsolewarn", "rconsoleinfo", "rconsoleerr", "rconsoletitle", "clonefunction"}) do
+    getgenv()[dick] = nil
+end
